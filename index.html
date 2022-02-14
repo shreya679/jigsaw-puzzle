@@ -33,23 +33,23 @@
                         <div style="width:340px;padding: 1px;">
                             <div style="width: 100%;">
                                 <img id="img1" onclick="touch(this)" src="assets/1.jpg" style="width: 100px;height: auto;" />
-                                <img id="img2" onclick="touch(this)"src="assets/2.jpg" style="width: 100px;height: auto;" />
-                                <img id="img3" onclick="touch(this)"src="assets/3.jpg" style="width: 100px;height: auto;" />
+                                <img id="img2" onclick="touch(this)" src="assets/2.jpg" style="width: 100px;height: auto;" />
+                                <img id="img3" onclick="touch(this)" src="assets/3.jpg" style="width: 100px;height: auto;" />
                             </div>
                             <div style="width: 100%;">
-                                <img id="img4" onclick="touch(this)"src="assets/4.jpg" style="width: 100px;height: auto;" />
-                                <img id="img5" onclick="touch(this)"src="assets/5.jpg" style="width: 100px;height: auto;" />
-                                <img id="img6" onclick="touch(this)"src="assets/6.jpg" style="width: 100px;height: auto;" />
+                                <img id="img4" onclick="touch(this)" src="assets/4.jpg" style="width: 100px;height: auto;" />
+                                <img id="img5" onclick="touch(this)" src="assets/5.jpg" style="width: 100px;height: auto;" />
+                                <img id="img6" onclick="touch(this)" src="assets/6.jpg" style="width: 100px;height: auto;" />
                             </div>
                             <div style="width: 100%;">
-                                <img id="img7" onclick="touch(this)"src="assets/7.jpg" style="width: 100px;height: auto;" />
-                                <img id="img8" onclick="touch(this)"src="assets/8.jpg" style="width: 100px;height: auto;" />
-                                <img id="img9" onclick="touch(this)"src="assets/9.jpg" style="width: 100px;height: auto;" />
+                                <img id="img7" onclick="touch(this)" src="assets/7.jpg" style="width: 100px;height: auto;" />
+                                <img id="img8" onclick="touch(this)" src="assets/8.jpg" style="width: 100px;height: auto;" />
+                                <img id="img9" onclick="touch(this)" src="assets/9.jpg" style="width: 100px;height: auto;" />
                             </div>
                             <div style="width: 100%;">
-                                <img id="img10" onclick="touch(this)"src="assets/10.jpg" style="width: 100px;height: auto;" />
-                                <img id="img11" onclick="touch(this)"src="assets/11.jpg" style="width: 100px;height: auto;" />
-                                <img id="img12" onclick="touch(this)"src="assets/12.jpg" style="width: 100px;height: auto;" />
+                                <img id="img10" onclick="touch(this)" src="assets/10.jpg" style="width: 100px;height: auto;" />
+                                <img id="img11" onclick="touch(this)" src="assets/11.jpg" style="width: 100px;height: auto;" />
+                                <img id="img12" onclick="touch(this)" src="assets/12.jpg" style="width: 100px;height: auto;" />
                             </div>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <img src="assets/left.png" onclick="shift('left')"  style="height:50px;" />
+                                <img src="assets/left.jpg" onclick="shift('left')"  style="height:50px;" />
                             </td>
                             <td style="text-align: right;">
                                 <img src="assets/right.png" onclick="shift('right')"  style="height:50px;" />
@@ -79,7 +79,7 @@
                         <tr>
                             <td colspan="2" style="text-align: center;">
                                 <br />
-                                <button onclick="startpuzzle()">Start</button>
+                                <button id="btnstart" onclick="startpuzzle()">Start</button>
                                 <button onclick="stoppuzzle()">Stop</button>
                                 <br />
                                 <label id="timespent"></label>
@@ -91,7 +91,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <img src="assets/monalisa.jpg" />
+                <img src="pictures/monalisa.jpg" />
             </div>
         </div>
     </div>
@@ -123,7 +123,7 @@
         function assignimages() {
             for (let i = 1; i <= 12; i++) {
                 let img = document.getElementById("img" + i);
-                img.src = "assets/" + images[i - 1] + ".jpg";
+                img.src = "pictures/" + images[i - 1] + ".jpg";
             }
         }
 
@@ -183,6 +183,31 @@
             }
         }
 
+        function touch(ctrl)
+        {
+            let myid = Number(ctrl.id.replace("img", ""));
+            let blanknode = 0;
+            for (let i = 1; i <= 12; i++) {
+                let img = document.getElementById("img" + i);
+                let src = img.src;
+                let paths = src.split("/");
+                let imgpath = paths[paths.length - 1];
+                if(imgpath == blankimage)
+                {
+                    blanknode = i;
+                    break;
+                }
+            }
+            if(nodes[myid - 1][0] == blanknode)
+                shift("bottom");
+            else if(nodes[myid - 1][1] == blanknode)
+                shift("left");
+            else if(nodes[myid - 1][2] == blanknode)
+                shift("top");
+            else if(nodes[myid - 1][3] == blanknode)
+                shift("right");
+        }
+
         function shuffle(array) {
             let currentIndex = array.length, randomIndex;
             // While there remain elements to shuffle...
@@ -202,16 +227,31 @@
 
 
         function startpuzzle()
-        {            
-            images = shuffle(images);
-            assignimages();
-            timespent = 0;
-            movecount = 0;
-            isrunning = true;
+        {      
+            let text = document.getElementById("btnstart").innerText;
+            if(text == "Start"){
+                images = shuffle(images);
+                assignimages();
+                timespent = 0;
+                movecount = 0;
+                isrunning = true;
+                document.getElementById("btnstart").innerText = "Pause";
+            }
+            else if(text == "Pause")
+            {
+                isrunning = false;
+                document.getElementById("btnstart").innerText = "Resume";
+            }
+            else if(text == "Resume")
+            {
+                isrunning = true;
+                document.getElementById("btnstart").innerText = "Pause";
+            }
         }
 
         function stoppuzzle(){
             isrunning = false;
+            document.getElementById("btnstart").innerText = "Start";
         }
 
         setInterval(()=>{
